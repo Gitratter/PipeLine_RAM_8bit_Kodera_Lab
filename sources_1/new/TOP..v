@@ -188,8 +188,54 @@ module TOP(clk, reset, clksel, in, clk_ind, pipe_ind0, pipe_ind1, pipe_ind2, pip
     wire wb_load2 = ex_wb_load_instr[1];
     wire wb_load3 = ex_wb_load_instr[0];
 
+    always@(posedge clkt or posedge reset)begin  
+        if(reset)begin  
+            reg_A <= 8'b00000000;
+            reg_B <= 8'b00000000;
+            out   <= 8'b00000000; 
+            carry_flag <= 1'b0;
+            pipe_ind3 <= 0;
+        end else if(stage_ctrl >= 3)begin
+            if(ex_wb_memload)begin
+                case(ex_wb_memtarget)
+                    2'b00 : reg_A <= ram_dout;
+                    2'b01 : reg_B <= ram_dout;
+                    2'b10 : out   <= ram_dout;
+                    default: ;
+                endcase
+            end else begin
+                if(~wb_load0) reg_A <= ex_wb_alu_data;
+                if(~wb_load1) reg_B <= ex_wb_alu_data;
+                if(~wb_load2) out   <= ex_wb_alu_data;
+            end
+            carry_flag <= ex_wb_carry_wire;
+            pipe_ind3 <= 1;
+        end
+    end
     
+    always@(posedge clkt or posedge reset)begin  
+        if(reset)begin  
+            pcnt <= 4'b0000;
+        end else begin
+            if((~wb_load3) && (stage_ctrl >= 3))begin
+                pcnt <= ex_wb_alu_data;
+            end else begin
+                pcnt <= pcnt + 1'b1;
+            end
+        end
+    end
 
+    always@(posedge clkt or posedge reset)begin  
+        if(reset)begin  
+            clk_ind <= 0;
+        end else begin
+            if(clk_ind >= 4'1111)
+                clk_ind <= 0;
+            else
+                clk_ind <= clk_ind + 1;
+        end
+    end
+endmodule
 
 
 
