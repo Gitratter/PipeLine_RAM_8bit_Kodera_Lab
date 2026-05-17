@@ -1,14 +1,9 @@
-module ALU (
-    input  [3:0] INPUT,
-    input  [3:0] IM,
-    output [3:0] OUTPUT,
-    output       CFLAG
-);
+module ALU(ALUsel, select_data, im, ALU_data, carry);
+    input ALUsel;
+    input [7:0]select_data;
+    input [7:0]im;
+    output [7:0]ALU_data;
+    output carry;
 
-    wire [4:0] tmp;
-
-    assign tmp = INPUT + IM;
-    assign OUTPUT = tmp[3:0];
-    assign CFLAG = tmp[4];
-
+    assign {carry, ALU_data} = ALUsel?(select_data-im):(select_data+im);
 endmodule
