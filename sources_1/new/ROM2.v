@@ -1,29 +1,26 @@
-module ROM (
-	input [3:0] ADDR, 
-	output reg [7:0] COMMAND 
-);
+//ROM module 8bit 
+module ROM(pcnt, command);
+    input [3:0]pcnt;
+	output [12:0]command;
 
-always @* begin
-	case (ADDR)
-		4'b0000: COMMAND <= 8'b10110111; //OUT 0111
-		4'b0001: COMMAND <= 8'b00000001; //ADD A, 0001
-		4'b0010: COMMAND <= 8'b11100001; //JNC 0001
-		4'b0011: COMMAND <= 8'b00000001; //ADD A, 0001
-		4'b0100: COMMAND <= 8'b11100011; //JNC 0011
-		4'b0101: COMMAND <= 8'b10110110; //OUT 0110
-		4'b0110: COMMAND <= 8'b00000001; //ADD A, 0001
-		4'b0111: COMMAND <= 8'b11100110; //JNC 0110
-		4'b1000: COMMAND <= 8'b00000001; //ADD A, 0001
-		4'b1001: COMMAND <= 8'b11101000; //JNC 1000
-		4'b1010: COMMAND <= 8'b10110000; //OUT 0000
-		4'b1011: COMMAND <= 8'b10110100; //OUT 0100
-		4'b1100: COMMAND <= 8'b00000001; //ADD 0001
-		4'b1101: COMMAND <= 8'b11101010; //JNC 1010
-		4'b1110: COMMAND <= 8'b10111000; //OUT 1000
-		4'b1111: COMMAND <= 8'b11111111; //JMP 1111
-		default: COMMAND = 8'b00000000;
-	endcase
-end
-
+	reg [12:0]rom[0:13];
+    initial begin
+		rom[0] = {5'b00000, 8'b11111111};  //ADD A, 11111111
+		rom[1] = {5'b01010, 8'b00000000};  //OUT A
+		rom[2] = {5'b10011, 8'b00000001};  //STORE A, [0001]
+		rom[3] = {5'b01100, 8'b00000000};  //NOP
+		rom[4] = {5'b01100, 8'b00000000};  //NOP
+		rom[5] = {5'b01100, 8'b00000000};  //NOP
+		rom[6] = {5'b00000, 8'b00000001};  //ADD A, 1
+		rom[7] = {5'b01010, 8'b00000000};  //OUT A
+		rom[8] = {5'b10000, 8'b00000001};  //LOAD A,
+		rom[9] = {5'b01100, 8'b00000000};  //NOP
+		rom[10] = {5'b01100, 8'b00000000};  //NOP
+		rom[11] = {5'b01100, 8'b00000000};  //NOP
+		rom[12] = {5'b01010, 8'b00000000};  //OUT A
+		rom[13] = {5'b01100, 8'b00000000};  //NOP
+		
+    end
+    assign command = rom[pcnt];
 endmodule
 
