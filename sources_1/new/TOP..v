@@ -25,7 +25,7 @@ module TOP(clk, reset, clksel, in, clk_ind, pipe_ind0, pipe_ind1, pipe_ind2, pip
     always@(posedge clkt or posedge reset)begin
         if(reset)begin
             stage_ctrl <= 0;
-        end else if(stage_ctrl! = 3)begin
+        end else if(stage_ctrl != 3)begin
             stage_ctrl <= stage_ctrl + 1;
         end
     end
@@ -112,7 +112,7 @@ module TOP(clk, reset, clksel, in, clk_ind, pipe_ind0, pipe_ind1, pipe_ind2, pip
 
     wire [7:0]ex_select_data;
     SELECTOR selector(
-        .selector(ex_select),
+        .select(ex_select),
         .reg_A(srcA_for_selector),
         .reg_B(srcB_for_selector),
         .in(id_ex_in_data),
@@ -134,7 +134,7 @@ module TOP(clk, reset, clksel, in, clk_ind, pipe_ind0, pipe_ind1, pipe_ind2, pip
     reg [7:0]ram_din;
 
     always@(*)begin  
-        ram_din = 8'00000000;
+        ram_din = 8'b00000000;
         if(id_ex_instr[2])begin  //MemStore
             case(id_ex_instr[1:0])
                 2'b00 : ram_din = srcA_for_selector;
@@ -229,7 +229,7 @@ module TOP(clk, reset, clksel, in, clk_ind, pipe_ind0, pipe_ind1, pipe_ind2, pip
         if(reset)begin  
             clk_ind <= 0;
         end else begin
-            if(clk_ind >= 4'1111)
+            if(clk_ind >= 4'b1111)
                 clk_ind <= 0;
             else
                 clk_ind <= clk_ind + 1;
